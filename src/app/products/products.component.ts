@@ -17,4 +17,8 @@ export class ProductsComponent implements OnInit {
     ];
   }
 
+  handleDeleteProduct(p: any) {
+    let index = this.products.indexOf(p);
+    this.products.splice(index, 1);
+  }
 }
