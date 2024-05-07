@@ -1,6 +1,5 @@
 import {Component, OnInit} from '@angular/core';
 import {ProductService} from "../services/product.service";
-import {error} from "@angular/compiler-cli/src/transformers/util";
 import {Product} from "../model/product.model";
 
 @Component({
@@ -32,7 +31,7 @@ export class ProductsComponent implements OnInit {
 
   handleDeleteProduct(p: Product) {
     let conf=confirm("are you sure you want to delete this product?");
-    if(conf==false)return;
+    if(!conf)return;
     this.productService.deleteProduct(p.id).subscribe({
       next: (data) => {
         //this.handleGetAllProducts(); //this would call the backend and refresh the list  heavy
