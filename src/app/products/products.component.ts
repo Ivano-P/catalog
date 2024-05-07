@@ -1,4 +1,7 @@
 import {Component, OnInit} from '@angular/core';
+import {ProductService} from "../services/product.service";
+import {error} from "@angular/compiler-cli/src/transformers/util";
+import {Product} from "../model/product.model";
 
 @Component({
   selector: 'app-products',
@@ -6,19 +9,36 @@ import {Component, OnInit} from '@angular/core';
   styleUrl: './products.component.css'
 })
 export class ProductsComponent implements OnInit {
-  products! : Array<any>;
-  constructor() { }
+  products!: Array<Product>;
+  errorMessage!: string;
 
-  ngOnInit() {
-    this.products = [
-      {id:1, name: 'Computer', price: 3500},
-      {id:2, name: 'Mobile', price: 999},
-      {id:3, name: 'Tablet', price: 500},
-    ];
+  constructor(private productService: ProductService) {
   }
 
-  handleDeleteProduct(p: any) {
-    let index = this.products.indexOf(p);
-    this.products.splice(index, 1);
+  ngOnInit() {
+    this.handleGetAllProducts();
+  }
+
+  handleGetAllProducts() {
+    this.productService.getAllProducts().subscribe({
+      next: (data) => {
+        this.products = data;
+      },
+      error: (err) => {
+        this.errorMessage = err;
+      }
+    });
+  }
+
+  handleDeleteProduct(p: Product) {
+    let conf=confirm("are you sure you want to delete this product?");
+    if(conf==false)return;
+    this.productService.deleteProduct(p.id).subscribe({
+      next: (data) => {
+        //this.handleGetAllProducts(); //this would call the backend and refresh the list  heavy
+        let index = this.products.indexOf(p); //this is faster
+        this.products.splice(index, 1); //we splice the array to remove the product that was deleted
+      }
+    })
   }
 }
