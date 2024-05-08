@@ -40,4 +40,16 @@ export class ProductsComponent implements OnInit {
       }
     })
   }
+
+  togglePromotion(p: Product) {
+    let promo = p.promotion;
+    this.productService.setPromotion(p.id).subscribe({
+      next: (data) => {
+        p.promotion = !promo;
+      },
+      error: (err) => {
+        this.errorMessage = err;
+      }
+    });
+  }
 }
