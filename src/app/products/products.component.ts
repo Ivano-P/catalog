@@ -9,13 +9,29 @@ import {Product} from "../model/product.model";
 })
 export class ProductsComponent implements OnInit {
   products!: Array<Product>;
+  currentPage : number=0;
+  pageSize : number=5;
+  totalPages : number=0;
+
   errorMessage!: string;
 
   constructor(private productService: ProductService) {
   }
 
   ngOnInit() {
-    this.handleGetAllProducts();
+    this.handleGetPageProducts()
+  }
+
+  handleGetPageProducts() {
+    this.productService.getPageProducts(this.currentPage, this.pageSize).subscribe({
+      next: (data) => {
+        this.products = data.products;
+        this.totalPages = data.totalPages;
+      },
+      error: (err) => {
+        this.errorMessage = err;
+      }
+    });
   }
 
   handleGetAllProducts() {
@@ -51,5 +67,10 @@ export class ProductsComponent implements OnInit {
         this.errorMessage = err;
       }
     });
+  }
+
+  goToPage(i: number) {
+    this.currentPage =i;
+    this.handleGetPageProducts()
   }
 }
