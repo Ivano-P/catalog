@@ -1,6 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {ProductService} from "../services/product.service";
 import {Product} from "../model/product.model";
+import {FormBuilder, FormGroup} from "@angular/forms";
 
 @Component({
   selector: 'app-products',
@@ -9,16 +10,20 @@ import {Product} from "../model/product.model";
 })
 export class ProductsComponent implements OnInit {
   products!: Array<Product>;
-  currentPage : number=0;
+  currentPage : number = 0;
   pageSize : number=5;
   totalPages : number=0;
-
   errorMessage!: string;
+  searchFormGroupe!: FormGroup;
+  currentAction: string="all";
 
-  constructor(private productService: ProductService) {
+  constructor(private productService: ProductService, private fb: FormBuilder) {
   }
 
   ngOnInit() {
+    this.searchFormGroupe= this.fb.group({
+      keyword: this.fb.control(null)
+    });
     this.handleGetPageProducts()
   }
 
@@ -68,9 +73,34 @@ export class ProductsComponent implements OnInit {
       }
     });
   }
+  handleSearchProducts() {
+    this.currentAction = "search";
+    this.currentPage = 0;
+    let keyword = this.searchFormGroupe.value.keyword;
+    this.productService.searchProducts(keyword, this.currentPage, this.pageSize).subscribe({
+      next: (data) => {
+        this.products = data.products;
+        this.totalPages = data.totalPages;
+      }
+    });
+  }
 
   goToPage(i: number) {
-    this.currentPage =i;
-    this.handleGetPageProducts()
+    this.currentPage=i;
+    if(this.currentAction==='all')
+      this.handleGetPageProducts();
+    else
+      this.handleSearchProductsNoPageReset();
+  }
+
+  //this method does the same as handleSearchProducts but without resetting the page to 0.
+  handleSearchProductsNoPageReset(){
+    let keyword = this.searchFormGroupe.value.keyword;
+    this.productService.searchProducts(keyword, this.currentPage, this.pageSize).subscribe({
+      next: (data) => {
+        this.products = data.products;
+        this.totalPages = data.totalPages;
+      }
+    });
   }
 }
