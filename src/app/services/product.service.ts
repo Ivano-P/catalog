@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import {Observable, of, throwError} from "rxjs";
 import {Product} from "../model/product.model";
+import {UUID} from "angular2-uuid";
 
 
 @Injectable({
@@ -8,11 +9,16 @@ import {Product} from "../model/product.model";
 })
 export class ProductService {
   private products!: Array<Product>;
+
+  //placeholder backend db with list of test products
   constructor() {
+
     this.products = [
-      {id:1, name: 'Computer', price: 3500, promotion: true},
-      {id:2, name: 'Mobile', price: 999, promotion: false},
-      {id:3, name: 'Tablet', price: 500, promotion: true},
+      {id:UUID.UUID(), name: 'Computer', price: 3500, promotion: true},
+      {id:UUID.UUID(), name: 'Mobile', price: 999, promotion: false},
+      {id:UUID.UUID(), name: 'Tablet', price: 500, promotion: true},
+      {id:UUID.UUID(), name: 'Smartwatch', price: 200, promotion: false},
+
     ];
   }
 
@@ -23,12 +29,12 @@ export class ProductService {
 
   }
 
-  public deleteProduct (id:number) : Observable<boolean>{
+  public deleteProduct (id:string) : Observable<boolean>{
      this.products = this.products.filter(p => p.id != id);
      return of(true);
   }
 
-  public setPromotion(id : number) : Observable<Boolean>{
+  public setPromotion(id : string) : Observable<Boolean>{
     let product= this.products.find(p=>p.id==id);
     if(product != undefined) {
       product.promotion = !product.promotion;
