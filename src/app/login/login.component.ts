@@ -34,7 +34,7 @@ export class LoginComponent {
       next: (appUser: AppUser) => {
         this.authService.authenticateUser(appUser).subscribe({
           next : (date:boolean) => {
-            this.router.navigate(["/admin"]);
+            this.router.navigateByUrl("/admin/products");
           }
         });
       },

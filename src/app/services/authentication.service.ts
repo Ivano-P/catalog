@@ -10,9 +10,9 @@ export class AuthenticationService {
   users: AppUser[] = [];
   authenticatedUser:AppUser | undefined;
   constructor() {
-    this.users.push({userID: UUID.UUID(), userName: "user1", password: "1234", roles: ["ADMIN, USER"]});
+    this.users.push({userID: UUID.UUID(), userName: "admin", password: "1234", roles: ["ADMIN","USER"]});
+    this.users.push({userID: UUID.UUID(), userName: "user1", password: "1234", roles: ["USER"]});
     this.users.push({userID: UUID.UUID(), userName: "user2", password: "1234", roles: ["USER"]});
-    this.users.push({userID: UUID.UUID(), userName: "user3", password: "1234", roles: ["USER"]});
   }
 
   public login(userName: string, password: string):Observable<AppUser>{
@@ -34,5 +34,11 @@ export class AuthenticationService {
 
   isAuthenticated():boolean{
     return this.authenticatedUser !== undefined;
+  }
+
+  public logout(): Observable<boolean>{
+    localStorage.removeItem("authUser");
+    this.authenticatedUser = undefined;
+    return of(true);
   }
 }
