@@ -1,4 +1,8 @@
 <div class="container">
+
+  <nav *ngIf="authService.hasRole('ADMIN')" class="p-2 m-2 border border-info">
+    <button class="btn btn btn-outline-info" (click)="handleNewProduct()">New Product</button>
+  </nav>
   <ng-template #errors>
     <div class="text-danger">{{errorMessage}}</div>
   </ng-template>

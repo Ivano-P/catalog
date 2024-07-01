@@ -94,5 +94,10 @@ export class ProductService {
     } else return throwError(() => new Error("Product not found"));
   }
 
+  public addNewProduct(product: Product): Observable<Product> {
+    product.id = UUID.UUID();
+    this.products.push(product);
+    return of(product);
+  }
 
 }
